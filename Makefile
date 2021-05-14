@@ -2,8 +2,8 @@ SHELL := /usr/bin/env bash
 
 IMAGE_REGISTRY ?= quay.io
 IMAGE_REPOSITORY ?= app-sre
-REGISTRY_USER ?=
-REGISTRY_TOKEN ?=
+QUAY_USER ?=
+QUAY_TOKEN ?=
 CONTAINER_ENGINE_CONFIG_DIR = .docker
 
 # Accommodate docker or podman
