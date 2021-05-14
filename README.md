@@ -28,5 +28,5 @@ This is to avoid the "disappearing digest" problem, facilitating by-digest pulls
 
 To test the app-sre pipeline:
 - Create personal repositories and override variables as described [above](#local-buildtest).
-- Obtain credentials from your personal repository and set the `REGISTRY_USER` and `REGISTRY_TOKEN` variables.
+- Obtain credentials from your personal repository and set the `QUAY_USER` and `QUAY_TOKEN` variables.
 - Run `make build-push`.

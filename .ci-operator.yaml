@@ -1,4 +1,0 @@
-build_root_image:
-    name: ubi-minimal
-    namespace: ocp
-    tag: "8"
