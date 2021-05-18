@@ -8,7 +8,7 @@ The following `make` variables affect building/pushing:
 - `FORWARDER_NAME` (default `splunk-forwarder`)
 - `HEAVYFORWARDER_NAME` (default `splunk-heavyforwarder`)
 
-Images will be tagged and pushed as `${IMAGE_REGISTRY}/${IMAGE_REPOSITORY}/${[HEAVY]FORWARDER_NAME}:${VERSION}-${HASH}`, where `${VERSION}` and `${HASH}` are gleaned from [.splunk-version](.splunk-version) and [.splunk-version-hash](.splunk-version-hash), respectively.
+Images will be tagged and pushed as `${IMAGE_REGISTRY}/${IMAGE_REPOSITORY}/${[HEAVY]FORWARDER_NAME}:${VERSION}-${HASH}-${COMMIT}`, where `${VERSION}` and `${HASH}` are gleaned from [.splunk-version](.splunk-version) and [.splunk-version-hash](.splunk-version-hash), respectively, and ${COMMIT} is the 7 char short current commit hash of this repository.
 Therefore, for local building and testing, you should create personal image repositories and point to them by overriding at least `IMAGE_REPOSITORY`.
 
 Build images using `make build-forwarder` and `make build-heavyforwarder`.
@@ -23,8 +23,6 @@ To build around a new version, simply commit a PR updating those files.
 
 ## CICD
 After a PR merges, an integration job is run by app-sre triggering build/push of both images to `quay.io/app-sre/splunk-(heavy)forwarder`.
-Images are only built and pushed if they do not already exist in the repository at the current version.
-This is to avoid the "disappearing digest" problem, facilitating by-digest pulls of these images.
 
 To test the app-sre pipeline:
 - Create personal repositories and override variables as described [above](#local-buildtest).
