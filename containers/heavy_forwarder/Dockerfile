@@ -6,7 +6,7 @@ ADD .splunk-version-hash /
 RUN export VERSION=$(cat /.splunk-version) && export VERSION_HASH=$(cat /.splunk-version-hash) && \
     microdnf install -y libsemanage shadow-utils findutils procps wget && \
     microdnf clean all && \
-    wget -O /tmp/splunk.rpm "https://www.splunk.com/bin/splunk/DownloadActivityServlet?architecture=x86_64&platform=linux&version=${VERSION}&product=splunk&filename=splunk-${VERSION}-${VERSION_HASH}-linux-2.6-x86_64.rpm&wget=true" && \
+    wget -O /tmp/splunk.rpm "https://download.splunk.com/products/splunk/releases/${VERSION}/linux/splunk-${VERSION}-${VERSION_HASH}-linux-2.6-x86_64.rpm" && \
     rpm -ivh /tmp/splunk.rpm && \
     rm -f /tmp/splunk.rpm && \
     mkdir -p /host && chown splunk:splunk /host && \
