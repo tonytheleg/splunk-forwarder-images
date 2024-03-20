@@ -1,3 +1,5 @@
+include boilerplate/generated-includes.mk
+
 SHELL := /usr/bin/env bash
 
 IMAGE_REGISTRY ?= quay.io
@@ -65,3 +67,7 @@ docker-build-push-one:
 	${CONTAINER_ENGINE} --config=${CONTAINER_ENGINE_CONFIG_DIR} push ${IMAGE_URI}
 ### <<< Used by CD
 ##################
+
+.PHONY: boilerplate-update
+boilerplate-update:
+	@boilerplate/update
