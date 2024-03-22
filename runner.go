@@ -27,6 +27,7 @@ const UserSeedPath = "${SPLUNK_HOME}/etc/system/local/user-seed.conf"
 const ServerConfigPath = "${SPLUNK_HOME}/etc/system/local/server.conf"
 const HealthEndpoint = "/services/server/health/splunkd/details"
 const SplunkPasswdPath = "${SPLUNK_HOME}/etc/passwd"
+const SplunkdLogPath = "${SPLUNK_HOME}/var/log/splunk/splunkd.log"
 
 type Status struct {
 	Health  string
@@ -123,7 +124,7 @@ no_proxy = %s
 }
 
 var cmd *exec.Cmd
-
+var tail *exec.Cmd
 var ctx, stop = signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 
 func RunSplunk() bool {
@@ -134,6 +135,16 @@ func RunSplunk() bool {
 	cmd.Stderr = os.Stderr
 	cmd.Start()
 	cmd.Wait()
+	return ctx.Err() == nil
+}
+
+func TailFile() bool {
+	args := []string{"-F", os.ExpandEnv(SplunkdLogPath)}
+	tail = exec.CommandContext(ctx, "/usr/bin/tail", args...)
+	tail.Stdout = os.Stderr
+	tail.Stderr = os.Stderr
+	tail.Start()
+	tail.Wait()
 	return ctx.Err() == nil
 }
 
@@ -197,7 +208,6 @@ func StartServer() {
 	}))
 
 	http.ListenAndServe("0.0.0.0:8090", http.DefaultServeMux)
-
 }
 
 func (h *SplunkHealth) Check() bool {
@@ -234,9 +244,15 @@ func main() {
 
 	go StartServer()
 
-	for RunSplunk() {
-		log.Println("splunkd exited, restarting in 5 seconds")
+	go func() {
+		for RunSplunk() {
+			log.Println("splunkd exited, restarting in 5 seconds")
+			time.Sleep(time.Second * 5)
+		}
+	}()
+
+	for TailFile() {
+		log.Println("tail exited, restarting in 5 seconds")
 		time.Sleep(time.Second * 5)
 	}
-
 }
