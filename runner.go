@@ -137,6 +137,7 @@ func RunSplunk() bool {
 	// cmd.Stderr = os.Stderr
 	cmd.Start()
 	cmd.Wait()
+	TailFile()
 	return ctx.Err() == nil
 }
 
@@ -246,15 +247,8 @@ func main() {
 
 	go StartServer()
 
-	go func() {
-		for RunSplunk() {
-			log.Println("splunkd exited, restarting in 5 seconds")
-			time.Sleep(time.Second * 5)
-		}
-	}()
-
-	for TailFile() {
-		log.Println("tail exited, restarting in 5 seconds")
+	for RunSplunk() {
+		log.Println("splunkd exited, restarting in 5 seconds")
 		time.Sleep(time.Second * 5)
 	}
 }
