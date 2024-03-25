@@ -124,8 +124,7 @@ no_proxy = %s
 }
 
 var cmd *exec.Cmd
-var tail *exec.Cmd
-var ctx, stop = signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
+var ctx, _ = signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 
 func RunSplunk() bool {
 	args := []string{"start", "--answer-yes", "--nodaemon"}
@@ -133,18 +132,18 @@ func RunSplunk() bool {
 	cmd = exec.CommandContext(ctx, os.ExpandEnv(SplunkPath), args...)
 	cmd.Stdout = os.Stderr
 	cmd.Stderr = os.Stderr
-	cmd.Start()
-	cmd.Wait()
+	_ = cmd.Start()
+	_ = cmd.Wait()
 	return ctx.Err() == nil
 }
 
 func TailFile() bool {
 	args := []string{"-F", os.ExpandEnv(SplunkdLogPath)}
-	tail = exec.CommandContext(ctx, "/usr/bin/tail", args...)
+	tail := exec.CommandContext(ctx, "/usr/bin/tail", args...)
 	tail.Stdout = os.Stderr
 	tail.Stderr = os.Stderr
-	tail.Start()
-	tail.Wait()
+	_ = tail.Start()
+	_ = tail.Wait()
 	return ctx.Err() == nil
 }
 
